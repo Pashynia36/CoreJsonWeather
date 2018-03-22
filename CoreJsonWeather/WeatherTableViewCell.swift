@@ -11,6 +11,7 @@ import UIKit
 class WeatherTableViewCell: UITableViewCell {
 
     @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var iconWeather: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -22,9 +23,10 @@ class WeatherTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func prepareWeather(message: MessageModel, indexPath: Int) {
+    func prepareWeather(message: MessageEntity, indexPath: Int) {
         
-        tempLabel.text = "100"
+        iconWeather.image = UIImage(named: message.icon!)
+        tempLabel.text = "Temp:" + String(message.temp)
     }
 
 }

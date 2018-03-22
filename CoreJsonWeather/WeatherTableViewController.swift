@@ -11,9 +11,17 @@ import Alamofire
 
 class WeatherTableViewController: UITableViewController {
     
+    let context = AppDelegate.viewContext
     let url: String = "http://samples.openweathermap.org/data/2.5/forecast?q=London,us&appid=b6907d289e10d714a6e88b30761fae22"
     var weather: MessageModel?
+    var coreWeather: [MessageEntity] = []
     var fixThis: Int = 0
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        getData()
+        tableView.reloadData()
+    }
 
     override func viewDidLoad() {
         
@@ -41,7 +49,7 @@ class WeatherTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        cell.prepareWeather(message: weather!, indexPath: indexPath.row)
+        cell.prepareWeather(message: coreWeather[indexPath.row], indexPath: indexPath.row)
         
         return cell
     }
@@ -68,8 +76,9 @@ class WeatherTableViewController: UITableViewController {
     
     func addContext() {
         
-        if let k = weather?.list.count {
+        if let k = weather?.list.count, fixThis == 0 {
             for i in 0..<k {
+                print(i)
                 let context = AppDelegate.viewContext
                 let message = MessageEntity(context: context)
                 message.name = weather?.city.name
@@ -78,14 +87,25 @@ class WeatherTableViewController: UITableViewController {
                 message.pressure = (weather?.list[i].main.pressure)!
                 message.humidity = Int32((weather?.list[i].main.humidity)!)
                 // Save the data to coredata
-                //(UIApplication.shared.delegate as! AppDelegate).saveContext()
+                (UIApplication.shared.delegate as! AppDelegate).saveContext()
             }
+            fixThis += 1
+            getData()
         }
     }
     
     @objc func refreshEm(refreshControl: UIRefreshControl) {
         
         decoder()
+    }
+    
+    func getData() {
+        
+        do {
+            coreWeather = try context.fetch(MessageEntity.fetchRequest())
+        } catch {
+            print("Fetching Failed")
+        }
     }
 
 }

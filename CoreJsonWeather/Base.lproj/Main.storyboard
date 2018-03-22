@@ -51,6 +51,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="iconWeather" destination="vgJ-U2-jge" id="Dhg-NU-Ggv"/>
                                     <outlet property="tempLabel" destination="IYl-GO-Zv7" id="Hrv-0d-04u"/>
                                 </connections>
                             </tableViewCell>
