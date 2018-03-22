@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import Alamofire
 
 class WeatherTableViewController: UITableViewController {
@@ -60,13 +61,18 @@ class WeatherTableViewController: UITableViewController {
             Alamofire.request(decodeURL).responseJSON { (response) in
                 do {
                     self.weather = try JSONDecoder().decode(MessageModel.self, from: response.data!)
-                    self.refreshControl?.endRefreshing()
+                    
                     DispatchQueue.main.async {
                         // MARK:- CoreData save here.
-                        self.loadData()
+                        if self.coreWeather.isEmpty {
+                            self.loadData()
+                        } else {
+                            self.updateData()
+                        }
                         self.navigationItem.title = "\((self.coreWeather[0].name)!)"
                         self.tableView.reloadData()
                     }
+                    self.refreshControl?.endRefreshing()
                 } catch {
                     print("error")
                 }
@@ -92,6 +98,29 @@ class WeatherTableViewController: UITableViewController {
         }
     }
     
+    func updateData() {
+        
+        getData()
+        var i = 0
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MessageEntity")
+        let result = try? context.fetch(fetchRequest)
+        let resultData = result as! [MessageEntity]
+        for object in resultData {
+            object.name = weather?.city.name
+            object.icon = weather?.list[i].weather[0].icon
+            object.temp = (weather?.list[i].main.temp)!
+            object.pressure = (weather?.list[i].main.pressure)!
+            object.humidity = Int32((weather?.list[i].main.humidity)!)
+            i += 1
+        }
+        do {
+            try context.save()
+            print("Saved.")
+        } catch {
+            print("Could not save.")
+        }
+    }
+    
     @objc func refreshEm(refreshControl: UIRefreshControl) {
         
         decoder()
@@ -101,6 +130,7 @@ class WeatherTableViewController: UITableViewController {
         
         do {
             coreWeather = try context.fetch(MessageEntity.fetchRequest())
+            print(coreWeather.count)
         } catch {
             print("Fetching Failed")
         }
