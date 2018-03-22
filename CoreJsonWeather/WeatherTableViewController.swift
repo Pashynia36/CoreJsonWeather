@@ -62,9 +62,9 @@ class WeatherTableViewController: UITableViewController {
                     self.weather = try JSONDecoder().decode(MessageModel.self, from: response.data!)
                     self.refreshControl?.endRefreshing()
                     DispatchQueue.main.async {
-                        // FIXME:- CoreData save here.
-                        self.addContext()
-                        self.navigationItem.title = "\((self.weather?.city.name)!)"
+                        // MARK:- CoreData save here.
+                        self.loadData()
+                        self.navigationItem.title = "\((self.coreWeather[0].name)!)"
                         self.tableView.reloadData()
                     }
                 } catch {
@@ -74,11 +74,10 @@ class WeatherTableViewController: UITableViewController {
         }
     }
     
-    func addContext() {
+    func loadData() {
         
-        if let k = weather?.list.count, fixThis == 0 {
+        if let k = weather?.list.count {
             for i in 0..<k {
-                print(i)
                 let context = AppDelegate.viewContext
                 let message = MessageEntity(context: context)
                 message.name = weather?.city.name
@@ -89,7 +88,6 @@ class WeatherTableViewController: UITableViewController {
                 // Save the data to coredata
                 (UIApplication.shared.delegate as! AppDelegate).saveContext()
             }
-            fixThis += 1
             getData()
         }
     }
