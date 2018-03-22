@@ -22,7 +22,7 @@ class WeatherTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func prepareWeather(message: Message, indexPath: Int) {
+    func prepareWeather(message: MessageModel, indexPath: Int) {
         
         tempLabel.text = "100"
     }

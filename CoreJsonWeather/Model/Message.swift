@@ -9,33 +9,33 @@
 import Foundation
 
 
-struct Message: Decodable {
+struct MessageModel: Decodable {
     
     let cod: String
     let message: Double
     let cnt: Int
-    let list: [List]
-    let city: City
+    let list: [ListModel]
+    let city: CityModel
 }
 
-struct City: Decodable {
+struct CityModel: Decodable {
     
     let id: Int
     let name: String
-    let coord: Coord
+    let coord: CoordModel
     let country: String
 }
 
-struct List: Decodable {
+struct ListModel: Decodable {
     
     let dt: Int64
-    let main: Main
-    let weather: [Weather]
-    let clouds: Clouds
-    let wind: Wind
-    let rain: Rain?
-    let snow: Snow?
-    let sys: Sys
+    let main: MainModel
+    let weather: [WeatherModel]
+    let clouds: CloudsModel
+    let wind: WindModel
+    let rain: RainModel?
+    let snow: SnowModel?
+    let sys: SysModel
     let dtTxt: String
     
     enum CodingKeys: String, CodingKey {
@@ -53,7 +53,7 @@ struct List: Decodable {
     }
 }
 
-struct Main: Decodable {
+struct MainModel: Decodable {
     
     let temp: Double
     let tempMin: Double
@@ -78,7 +78,7 @@ struct Main: Decodable {
     }
 }
 
-struct Weather: Decodable {
+struct WeatherModel: Decodable {
     
     let id: Int
     let main: String
@@ -86,19 +86,19 @@ struct Weather: Decodable {
     let icon: String
 }
 
-struct Wind: Decodable {
+struct WindModel: Decodable {
     
     let speed: Double
     let degree: Double?
 }
 
-struct Coord: Decodable {
+struct CoordModel: Decodable {
     
     let lat: Double
     let lon: Double
 }
 
-struct Rain: Decodable {
+struct RainModel: Decodable {
     
     let threeH: Double?
     enum CodingKeys: String, CodingKey {
@@ -106,7 +106,7 @@ struct Rain: Decodable {
     }
 }
 
-struct Snow: Decodable{
+struct SnowModel: Decodable{
     
     let threeH: Double?
     enum CodingKeys: String, CodingKey {
@@ -114,12 +114,12 @@ struct Snow: Decodable{
     }
 }
 
-struct Sys: Decodable {
+struct SysModel: Decodable {
     
     let pod: String
 }
 
-struct Clouds: Decodable {
+struct CloudsModel: Decodable {
     
     let all: Int
 }
