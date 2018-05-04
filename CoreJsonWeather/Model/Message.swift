@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 struct MessageModel: Decodable {
     
     let cod: String
