@@ -16,7 +16,7 @@ class WeatherTableViewController: UITableViewController {
     let url: String = "http://samples.openweathermap.org/data/2.5/forecast?q=London,us&appid=b6907d289e10d714a6e88b30761fae22"
     var weather: MessageModel?
     var coreWeather: [MessageEntity] = []
-    var fixThis: Int = 0
+    var myOwnHack: Int = 0
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -34,24 +34,21 @@ class WeatherTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if let i = weather?.list.count {
-            return i
-        } else if fixThis == 0 {
-            let alert = UIAlertView()
-            alert.title = "Greetings"
-            alert.message = "Please, pull down the page."
-            alert.addButton(withTitle: "Okay")
-            alert.show()
-            fixThis += 1
+        if myOwnHack == 0 {
+            let alert = UIAlertController(title: "Greetings", message: "Please, pull down the page.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+            alert.addAction(action)
+            present(alert, animated: true)
+            myOwnHack += 1
         }
-        return 0
+        return weather?.list.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        cell.prepareWeather(message: coreWeather[indexPath.row], indexPath: indexPath.row)
         
-        return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as? WeatherTableViewCell
+        cell?.prepareWeather(message: coreWeather[indexPath.row], indexPath: indexPath.row)
+        return cell ?? UITableViewCell()
     }
     
     func decoder() {
@@ -60,7 +57,6 @@ class WeatherTableViewController: UITableViewController {
             Alamofire.request(decodeURL).responseJSON { (response) in
                 do {
                     self.weather = try JSONDecoder().decode(MessageModel.self, from: response.data!)
-                    
                     DispatchQueue.main.async {
                         // MARK:- CoreData save here.
                         if self.coreWeather.isEmpty {
@@ -134,5 +130,4 @@ class WeatherTableViewController: UITableViewController {
             print("Fetching Failed")
         }
     }
-
 }

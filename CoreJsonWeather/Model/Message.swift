@@ -39,7 +39,6 @@ struct ListModel: Decodable {
     
     enum CodingKeys: String, CodingKey {
         
-        // без кейса всех переменных ошибка
         case dt
         case main
         case weather
@@ -65,7 +64,6 @@ struct MainModel: Decodable {
     
     enum CodingKeys: String, CodingKey {
         
-        // без кейса всех переменных ошибка
         case temp
         case tempMin = "temp_min"
         case tempMax = "temp_max"
